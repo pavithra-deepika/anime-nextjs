@@ -1,4 +1,4 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<h1 align="center">  Litnotes(Typicode)  </h1>
 
 ## Getting Started
 
@@ -8,15 +8,16 @@ First, run the development server:
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Tech stack:
+- browser
+- Code Editor (like Visula Studio Code/ notepad)
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Application shots
+![image](https://github.com/pavithra-deepika/React-js-anime/blob/main/iamge/Screenshot%20from%202023-08-09%2022-27-10.png)
 
 ## Learn More
 
