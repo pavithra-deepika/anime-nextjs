@@ -1,4 +1,4 @@
-<h1 align="center">  Litnotes(Typicode)  </h1>
+<h1 align="center"> Anime   </h1>
 
 ## Getting Started
 
