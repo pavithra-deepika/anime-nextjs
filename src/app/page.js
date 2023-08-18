@@ -1,95 +1,117 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+
+"use client"
+import { Button, Grid, MenuItem, Pagination, Select, TextField } from '@mui/material';
+import { useState, useEffect } from 'react';
+
+import InputLabel from '@mui/material/InputLabel';
+import AnimeCard from './Component/AnimeCard';
+import FormControl from '@mui/material/FormControl';
 
 export default function Home() {
+  const [filters,setFilter] = useState([0]);
+  const [pages,setPage] = useState();
+  const [animes,setAnimes] = useState([]);
+  const [genres, setGenre] = useState('');
+  useEffect(() => {
+    fetchAnimes();  
+    filterAnimes();
+    },[]);
+
+  let movies;
+  const fetchAnimes = async () => {
+    const data=await fetch("https://api.jikan.moe/v4/anime");
+    movies=await data.json();
+    setAnimes(movies.data);
+    movies.pagination ? setPage(movies.pagination.last_visible_page) : "";
+    }; 
+    // search
+  const searchAnimes = async () => {
+    let val= document.getElementById("searchAnime").value
+    const data=await fetch("https://api.jikan.moe/v4/anime?q="+val);
+    movies=await data.json();
+    setAnimes(movies.data)
+    }; 
+    // filter
+  const filterAnimes = async () => {
+    const data=await fetch("https://api.jikan.moe/v4/genres/anime");
+    let filter=await data.json();
+    setFilter(filter.data)
+    };  
+  const handleChange = async(event,value) => {
+    setGenre(event.target.value);
+    const data=await fetch("https://api.jikan.moe/v4/anime?genres="+event.target.value);
+    movies=await data.json();
+    setAnimes(movies.data)
+    };
+    // pagination
+  const changePage= async(event,value)=>{
+    const data=await fetch("https://api.jikan.moe/v4/anime?page="+value);
+    movies=await data.json();
+    setAnimes(movies.data)
+    }
+
+    function drag(e, ev) {
+      console.log('Drag Event', ev)
+      e.dataTransfer.setData("text", ev);
+    }
+
+    function drop(ev) {
+      ev.preventDefault();
+      var data = ev.dataTransfer.getData("text");
+      console.log(data)
+      // ev.target.appendChild(document.getElementById(data));
+    }
+        
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div>
+      <h2>React JS Animes</h2>
+      <Grid container  sx={{ p:2}}> 
+        <Grid item xs={3}>
+          {filters ?
+          <FormControl  sx={{ minWidth: 150 }}>
+          <InputLabel id="demo-simple-select-label">Anime Genre</InputLabel>
+          <Select
+          labelId="demo-simple-select-label"                
+          id="demo-simple-select"
+          value={genres}
+          label="AnimeGenre"
+          onChange={handleChange}
           >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+            {filters.map(elem => (            
+            <MenuItem  key={elem.mal_id} value={elem.mal_id}>{elem.name}</MenuItem>   
+            )) }   
+          </Select>
+          </FormControl> 
+          : ""}
+             
+        </Grid>
+        <Grid item xs={5} >
+        <Pagination  sx={{ p:1}} count={pages} onChange={changePage}/> 
+        </Grid>
+        <Grid item xs={4} >
+          <TextField id="searchAnime" label="search" variant="outlined" placeholder ='search'  size="small"/>
+          <Button variant="outlined" sx={{ marginLeft:2}} onClick={searchAnimes}>search</Button>
+        </Grid> 
+      </Grid>
+      <Grid container  sx={{ p:1}}>
+        <Grid item xs={12}>
+          <Grid
+          container
+          spacing={2} 
+          direction="row"
+          justify="flex-start"
+          alignItems="flex-start"
+          flexWrap={'wrap'}
+          >
+          {animes ?  animes.map(elem => (
+            <Grid id={elem.id} item xs={12} sm={8} md={3} key={animes.indexOf(elem)}  >
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+                 <AnimeCard movie={elem} /> 
+             </Grid>
+          )) : "No Result Found"}
+          </Grid>
+        </Grid>
+      </Grid>
+    </div>
+  );
 }
